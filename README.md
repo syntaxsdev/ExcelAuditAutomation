@@ -1,5 +1,5 @@
 # Overview
-This project utilizes two main files. AuditControl.ps1, AutomationMaker.ps1, and DataParser.ps1. This project aims to aid basic Excel automation, daily task automation for Excel, and the ability to move them to different folders when done processing.
+This project utilizes three main files. AuditControl.ps1, AutomationMaker.ps1, and DataParser.ps1. This project aims to aid basic Excel automation, daily task automation for Excel, and the ability to move them to different folders when done processing.
 
 # Instructions for setup
 1.	The first step is the run the AUTO_CONFIG.ps1 file.
