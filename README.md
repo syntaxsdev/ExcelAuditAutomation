@@ -1,6 +1,15 @@
 # Overview
 This project utilizes two main files. AuditControl.ps1, AutomationMaker.ps1, and DataParser.ps1. This project aims to aid basic Excel automation, daily task automation for Excel, and the ability to move them to different folders when done processing.
 
+# Instructions for setup
+1.	The first step is the run the AUTO_CONFIG.ps1 file.
+a.	Enter each automation function name, and then the three associated folders 
+b.	ORIGINAL and IN PROGRESS paths CANNOT be blank, COMPLETE path can be empty.
+2.	Once AUTO_CONFIG.ps1 is done, open AuditControl.ps1. Which the attached configuration saved; all you have to do now is type the amount of days back from the current day you want the program to process the files. 
+EX: If it is a Monday, you must type 3, to process audits from Friday, Saturday & Sunday.
+If it is any other day of the week, you may only need to type 1 for one day.
+
+
 # How To Create An Automation
 1.	First, name your automation. Once you pick a name, open the AutomationMaker.ps1 file.
 a.	Scroll down below the line that says automations go under here.
