@@ -32,3 +32,13 @@ $excelScripts.getWS() -> gets the Excel COM object for the default worksheet. Ad
 + SaveAndQuit()
 + SaveQuitAndMove($dir)
 ```
+## Examples
+
+```powershell
+$excel.AddColumns("A:C") # Adds columns to in spot A-C. shifting over everything to right
+
+$excel.SetColumnWidth("A:A", 19) # Sets Column A only to size 19. 
+$excel.FillDown("A1:A20") # Autofills from the first row down.
+ $excel.ApplyFilter(2, "1:1", "Task Type", "Backup") # 2 corresponds to the column that has the filter, "1:1" corresponds to which row the entire filter grouping is on, "Task Type" is the Filter field name, and "Backup" is what I want to filter by.
+ ```
+ 
