@@ -8,9 +8,27 @@ b.	Add the lines below, replacing “myAutomation” with your desire automation
 ```powershell
 $excelScripts.newAutomation("MyAutomation", {
     $excel = $excelScripts.getExcel()
-    
+    #AUTOMATION GOES HERE
 })
 ```
 2.	Inside the function, use the documentation below to build the automation that suits your needs. If needed, 
 $excelScripts.getWS() -> gets the Excel COM object for the default worksheet. Additional methods can be accessed through here.
 3.	Make sure to SaveAndQuit() at the end of each automation function. If you are using multiple automations to recycle code or to achieve the baseline automation before adding more specific tasks, you do not have to add the SaveAndQuit() to that automation. You can recall a previously defined automation by `$excelScripts.run(“MyAutomation”)` at the top of your new automation’s code.
+
+
+## Functionality
+```powershell
++ SetWorksheet($num)
++ AddColumns($cols)
++ AddRows($rows)
++ SetColumnWidth($cols, $width)
++ SetCell($cells, $value)
++ GetCellValue($cell)
++ FillDown($cells)
++ ColumnAutoFit($cols)
++ AddFilter($rows)
++ ApplyFilter($byCol, $onRows, $filterName, $filterAction)
++ GetRowCount()
++ SaveAndQuit()
++ SaveQuitAndMove($dir)
+```
