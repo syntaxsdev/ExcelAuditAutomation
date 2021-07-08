@@ -34,8 +34,8 @@ function Netwrix($excel) {
 
 $excelScripts.newAutomation("SqlJobsCancelled", {
     $excel = $excelScripts.getExcel()
-    #CODE GOES HERE
 })
+
 
 
 
@@ -73,7 +73,7 @@ class ExcelAutomation {
     }
     
     [void] run($name) {
-        $res = $this.automations[$name].Invoke($this.getExcel())
+        $this.automations[$name].Invoke($this.getExcel())
         #$this.getExcel().SaveAndQuit()
     }
 }
