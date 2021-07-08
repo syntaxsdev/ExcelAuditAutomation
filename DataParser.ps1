@@ -9,7 +9,7 @@ $pe = [PowerExcel]::new($file, $true)
 
 class PowerExcel {
     [string] $file
-
+    $meta = @{}
     $excelConn = @{
         conn=$null
         workbook=$null
@@ -18,6 +18,8 @@ class PowerExcel {
 
     PowerExcel($excelFile, $showWindow) {
         $this.file = $excelFile
+        $import = (Import-Clixml -Path "$(Get-Location)\savedConfig.xml") #[$mDataKey]
+        $this.meta = $import[($import.Keys | Where-Object {$_ -like "*$module*"})]
         $this.excelConn.conn = (New-Object -ComObject Excel.Application)
         $this.excelConn.workbook = ($this.excelConn.conn.Workbooks.Open($excelFile))
         #save file as XLSX file version 51: xlOpenXMLWorkbook
@@ -57,7 +59,7 @@ class PowerExcel {
 
 
     [object] SetCell($cells, $value) {
-        $cellRange = $this.getWS().Range($cells).Value2 = $value
+        $this.getWS().Range($cells).Value2 = $value
         return $this
     }
 
@@ -78,7 +80,9 @@ class PowerExcel {
     [object] AddFilter($row) {
         return $this.getWS().Rows($row).AutoFilter()
     }
-
+    [System.Collections.DictionaryEntry] GetMeta() {
+        return $this.meta
+    }
     [void] SaveAndQuit() {
         $this.excelConn.workbook.Save()
         $this.excelConn.conn.Quit()
@@ -88,10 +92,15 @@ class PowerExcel {
         return $this.getWS().UsedRange.Rows.Count
     }
     [void] SaveQuitAndMove($dir) {
+        $finalDir = $dir
+        if ($dir -like "{*}") { 
+            $finalDir = $this.meta[$dir.substring(1, $dir.Length -2)] 
+        }
+
         $this.SaveAndQuit()
         Start-Sleep -Seconds 1
         $newPath = $this.file.Trim(".csv") + ".xlsx"
-        Move-Item -Path $newPath -Destination $dir
+        Move-Item -Path $newPath -Destination $finalDir
 
     }
     [void] ApplyFilter($byCol, $onRows, $filterName, $filterAction)  {
