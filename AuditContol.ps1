@@ -14,8 +14,9 @@ function Start-Auto($days) {
         foreach ($file in $filesInFolder) 
         {
             foreach ($name in $fileNames) {
-                if ($file -like  "*$name*") {
-                    Write-Host "File found matches criteria {$name}"
+                $trimName = $name.Trim()
+                if ($file -like  "*$trimName*") {
+                    Write-Host "File found matches criteria {$trimName}"
                     . "$(Get-Location)\DataParser.ps1" -file $file -module $newMod
                     #pause 2 seconds because some large datasets take longer to save and quit
                    if ($_ -eq $newMod) {
