@@ -11,7 +11,6 @@ while ( $autoName = (Read-Host -Prompt "Please enter the excel Job function name
     $automations[$autoName] = @{original=$original 
                                 inProgress=$inProgress
                                 completed=$completed}
-    Write-Host ("  ")
 }
 
 $automations | Export-Clixml -Path ("$(Get-Location)\savedConfig.xml") 
