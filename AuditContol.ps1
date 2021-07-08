@@ -3,6 +3,9 @@ function Start-Auto($days) {
 
     Write-Host "`nAuditingControl is running. There were $($config.count) automations found."
     $config.Keys | ForEach-Object {
+        if ($config[$_].fileNames -ne "all" -or $config[$_].fileNames -ne "no") {
+            $fileNames = $config[$_].fileNames -split ","
+        }
         $filesInFolder = Get-ChildItem -Path $config[$_].original -Recurse -Include *.csv | Where-Object {$_.LastWriteTime -gt (Get-Date).AddDays(-$days)}
         $newMod = $_
         if ($newMod -like "*{ignore-path}*") {
@@ -10,11 +13,16 @@ function Start-Auto($days) {
         }
         foreach ($file in $filesInFolder) 
         {
-            . "$(Get-Location)\DataParser.ps1" -file $file -module $newMod
-            #pause 2 seconds because some large datasets take longer to save and quit
-           if ($_ -eq $newMod) {
-            Start-Sleep -Seconds 1
-            Move-Item -Path "$($config[$_].original)\$($file.BaseName).xlsx" -Destination $config[$_].inProgress
+            foreach ($name in $fileNames) {
+                if ($file -like  "*$name*") {
+                    Write-Host "File found matches criteria {$name}"
+                    . "$(Get-Location)\DataParser.ps1" -file $file -module $newMod
+                    #pause 2 seconds because some large datasets take longer to save and quit
+                   if ($_ -eq $newMod) {
+                    Start-Sleep -Seconds 1
+                    Move-Item -Path "$($config[$_].original)\$($file.BaseName).xlsx" -Destination $config[$_].inProgress
+                }
+            }
            }
            
         }
