@@ -1,4 +1,4 @@
-﻿<#
+<#
 THIS IS WHERE ALL EXCEL AUTOMATION SHOULD BE PLACED
 EXAMPLES GIVEN BELOW
 #>
@@ -14,7 +14,7 @@ $excelScripts = [ExcelAutomation]::new($event)
 #>
 
 function SqlJobsCancelled($excel) {
-   
+   $excel.SetCell("C1", "Sum")
 }
 
 function Netwrix($excel) {
@@ -30,22 +30,23 @@ function Netwrix($excel) {
     1.anonymously, and then get the $excel object using $excelScripts.getExcel() or ;
     2. using the function name to in place and passing $excel as the parameter
 #>
+#---------------------------------------------AUTOMATIONS GO UNDER HERE---------------------------------------------------------
+
 $excelScripts.newAutomation("SqlJobsCancelled", {
     $excel = $excelScripts.getExcel()
-
+    #CODE GOES HERE
 })
 
 
 
 
 
-
-
+#--------------------------------------------------AUTOMATIONS END HERE--------------------------------------------------------
 switch ($action) {
-
     "run" {try {
-        Write-Host "Attempting to run Module [$module]"
+        Write-Host "`nAttempting to run Module [$module]"
         $excelScripts.run($module)
+        Write-Host "Successfully executed Module [$module]!!"
         . "$(Get-Location)\logger.ps1" -log "Successfully executed Module [$module]"
         } catch {
             . "$(Get-Location)\logger.ps1" -log "An error occured in attempting to run the automation for Module [$module]"}}
@@ -66,13 +67,13 @@ class ExcelAutomation {
         return $this.excelObj
     }
 
-    [object] newAutomation($name, [scriptblock] $func) {
+    [void] newAutomation($name, [scriptblock] $func) {
         $this.automations[$name] = $func
-        return $this.automations[$name]
+        $this.automations[$name]
     }
     
     [void] run($name) {
-        $this.automations[$name].Invoke($this.getExcel())
+        $res = $this.automations[$name].Invoke($this.getExcel())
         #$this.getExcel().SaveAndQuit()
     }
 }
