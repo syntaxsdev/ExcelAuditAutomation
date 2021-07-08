@@ -35,7 +35,7 @@ class PowerExcel {
     }
 
     [object] getWS() {
-        $ws = if ($this.excelConn.ws -ne $null) {($this.excelConn.ws)} Else {($this.excelConn.workbook.Worksheets.Item(1))}
+        $ws = if ($null -ne $this.excelConn.ws) {($this.excelConn.ws)} Else {($this.excelConn.workbook.Worksheets.Item(1))}
         return $ws;
     }
 
