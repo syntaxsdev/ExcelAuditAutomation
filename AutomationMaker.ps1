@@ -38,9 +38,6 @@ $excelScripts.newAutomation("SqlJobsCancelled", {
 
 
 
-
-
-
 #--------------------------------------------------AUTOMATIONS END HERE--------------------------------------------------------
 switch ($action) {
     "run" {try {
