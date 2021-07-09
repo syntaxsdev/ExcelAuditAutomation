@@ -4,10 +4,11 @@ This project utilizes three main files. **AuditControl.ps1**, **AutomationMaker.
 # Instructions for setup
 1. Create your automations first. Skip to the step below on how to create one.
 
-2.	The next step is to run the configuration maker which is the **AUTO_CONFIG.ps1** file.
+2.	The next step is to run the configuration maker which is the **GUI.ps1** file. CLI based configuration is the **AUTO_CONFIG.ps1**.
     - Enter each automation function name, and then the three associated folders *(ORIGINAL, IN PROGRESS, COMPLETE)*
     - ORIGINAL and IN PROGRESS paths CANNOT be blank, however COMPLETE path can be empty.
     - To whitelist a file so only certain file names will be processed, enter a keywords, seperated by a comma.
+    - If you want to add more to the existing config, hit the "Import" button. If one does not already exist it will give you a warning.
     
 3.	Once **AUTO_CONFIG.ps1** is done, open **AuditControl.ps1** to start your automation. With the attached configuration saved, all you have to do now is type the amount of days back from the current day you want the program to process the files. 
 EX: If it is a Monday, you must type 3, to process audits from Friday, Saturday & Sunday.
