@@ -1,4 +1,4 @@
-#AUTO_CONFIG
+﻿#AUTO_CONFIG
 $automations = @{}
 
 while ( $autoName = (Read-Host -Prompt "Please enter the excel Job function name you are staging. If there are no more, type 'none'")) {

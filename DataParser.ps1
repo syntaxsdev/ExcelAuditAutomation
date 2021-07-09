@@ -20,13 +20,21 @@ class PowerExcel {
         $this.file = $excelFile
         $import = (Import-Clixml -Path "$(Get-Location)\savedConfig.xml") #[$mDataKey]
         $this.meta = $import[($import.Keys | Where-Object {$_ -like "*$module*"})]
+
+        #if not an excel or processable file, then return
+        #does not need a workbook connection
+        if ($excelFile.Extension -ne '.csv' -xor $excelFile.Extension -ne '.xls' -xor $excelFile.Extension -ne '.xlsx') {
+            #run extension specific function
+            return
+        }
+
         $this.excelConn.conn = (New-Object -ComObject Excel.Application)
         $this.excelConn.workbook = ($this.excelConn.conn.Workbooks.Open($excelFile))
         #save file as XLSX file version 51: xlOpenXMLWorkbook
         if ($excelFile.Extension -eq '.csv') {
             $this.excelConn.workbook.SaveAs($excelFile.FullName.Trim(".csv"), 51)
-
         }
+        
         $this.excelConn.conn.Visible = $showWindow 
     }
 

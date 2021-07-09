@@ -112,6 +112,24 @@ $keywordTxtBox.height            = 20
 $keywordTxtBox.location          = New-Object System.Drawing.Point(22,188)
 $keywordTxtBox.Font              = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
+$fileExtLbl                      = New-Object system.Windows.Forms.Label
+$fileExtLbl.text                 = "Specific file extension"
+$fileExtLbl.AutoSize             = $true
+$fileExtLbl.width                = 25
+$fileExtLbl.height               = 10
+$fileExtLbl.location             = New-Object System.Drawing.Point(39,220)
+$fileExtLbl.Font                 = New-Object System.Drawing.Font('Microsoft YaHei UI',10)
+$fileExtLbl.ForeColor            = [System.Drawing.ColorTranslator]::FromHtml("#ffffff")
+$fileExtLbl.Tool
+
+$fileExt                   = New-Object system.Windows.Forms.TextBox
+$fileExt.multiline         = $false
+$fileExt.width             = 50
+$fileExt.height            = 20
+$fileExt.Text              = ".*"
+$fileExt.location          = New-Object System.Drawing.Point(200,220)
+$fileExt.Font              = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+
 $SaveConfigBtn                   = New-Object system.Windows.Forms.Button
 $SaveConfigBtn.text              = "Save Config"
 $SaveConfigBtn.width             = 100
@@ -132,10 +150,11 @@ $ToolTip.SetToolTip($jobLbl, '[MANDATORY] This is the automation name that you w
 $ToolTip.SetToolTip($completeLbl, '[OPTIONAL] This is optional, if you want to allow your code to send files to the completed folder after a certain condition.')
 $ToolTip.SetToolTip($AddModuleBtn, 'Once you are done with a job, click Add Module to save it. You can enter more modules after that.')
 $ToolTip.SetToolTip($SaveConfigBtn, 'Click here to save your configuration file. You can close the program after it saves.')
+$ToolTip.SetToolTip($fileExtLbl, 'If you want the automation to run on specific file types. If all files, leave as ".*" NOTE: Only .xlsx and .csv files can be processed through excel automation. .CSV files will be converted to .XLSX. ')
 
 $Form.controls.AddRange(@($jobTxtBox,$jobLbl,$originalLbl,$originalTxtBox,$AddModuleBtn,
     $completeLbl,$completeTxtBox,$inProgressLbl,$inProgressTxtBox,$Button1,
-    $SaveConfigBtn, $keywordFileLbl, $keywordTxtBox, $ImportBtn))
+    $SaveConfigBtn, $keywordFileLbl, $keywordTxtBox, $ImportBtn, $fileExtLbl, $fileExt))
 
 $AddModuleBtn.Add_Click({ AddModule })
 $SaveConfigBtn.Add_Click({ SaveConfig })
@@ -166,12 +185,14 @@ function AddModule {
         inProgress=$inProgressTxtBox.Text
         completed=$completeTxtBox.Text
         fileNames=$keywordTxtBox.Text
+        fileType=($fileExt.Text -split ",").Trim()
     }
     $jobTxtBox.Clear()
     $originalTxtBox.Clear()
     $inProgressTxtBox.Clear()
     $completeTxtBox.Clear()
     $keywordTxtBox.Clear()
+    $fileExt.Clear()
  }
 
 
