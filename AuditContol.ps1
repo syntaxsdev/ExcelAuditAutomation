@@ -13,6 +13,7 @@ function Start-Auto($date) {
         }
         foreach ($file in $filesInFolder) 
         {
+            Write-Host "`nFile Found: [$file]"
             foreach ($name in $fileNames) {
                 $trimName = $name.Trim()
                 if ($file -like  "*$trimName*") {

@@ -112,6 +112,15 @@ $keywordTxtBox.height            = 20
 $keywordTxtBox.location          = New-Object System.Drawing.Point(22,188)
 $keywordTxtBox.Font              = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
+$IgnorePathChk                   = New-Object system.Windows.Forms.CheckBox
+$IgnorePathChk.text              = "Ignores Default Path?"
+$IgnorePathChk.AutoSize          = $false
+$IgnorePathChk.width             = 200
+$IgnorePathChk.height            = 20
+$IgnorePathChk.location          = New-Object System.Drawing.Point(280, 220)
+$IgnorePathChk.Font              = New-Object System.Drawing.Font('Microsoft YaHei UI',10)
+$IgnorePathChk.ForeColor         = [System.Drawing.ColorTranslator]::FromHtml("#ffffff")
+
 $fileExtLbl                      = New-Object system.Windows.Forms.Label
 $fileExtLbl.text                 = "Specific file extension"
 $fileExtLbl.AutoSize             = $true
@@ -126,7 +135,7 @@ $fileExt                   = New-Object system.Windows.Forms.TextBox
 $fileExt.multiline         = $false
 $fileExt.width             = 50
 $fileExt.height            = 20
-$fileExt.Text              = ".*"
+$fileExt.Text              = "*.csv"
 $fileExt.location          = New-Object System.Drawing.Point(200,220)
 $fileExt.Font              = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
@@ -154,12 +163,16 @@ $ToolTip.SetToolTip($fileExtLbl, 'If you want the automation to run on specific 
 
 $Form.controls.AddRange(@($jobTxtBox,$jobLbl,$originalLbl,$originalTxtBox,$AddModuleBtn,
     $completeLbl,$completeTxtBox,$inProgressLbl,$inProgressTxtBox,$Button1,
-    $SaveConfigBtn, $keywordFileLbl, $keywordTxtBox, $ImportBtn, $fileExtLbl, $fileExt))
+    $SaveConfigBtn, $keywordFileLbl, $keywordTxtBox, $ImportBtn, $fileExtLbl, $fileExt, $IgnorePathChk))
 
 $AddModuleBtn.Add_Click({ AddModule })
 $SaveConfigBtn.Add_Click({ SaveConfig })
 $ImportBtn.Add_Click( { ImportConfig } )
+$IgnorePathChk.Add_Click({ IgnorePath })
 
+function IgnorePath() {
+
+}
 function ImportConfig {
     $path = "$(Get-Location)\savedConfig.xml"
     Test-Path -Path $path
@@ -181,7 +194,11 @@ function SaveConfig {
 }
 
 function AddModule {
-    $config[$jobTxtBox.Text] = @{original=$originalTxtBox.Text 
+    $jobName = $jobTxtBox.Text
+    if ($IgnorePathChk.Checked) {
+        $jobName = "$jobName{ignore-path}"
+    }
+    $config[$jobName] = @{original=$originalTxtBox.Text
         inProgress=$inProgressTxtBox.Text
         completed=$completeTxtBox.Text
         fileNames=$keywordTxtBox.Text
@@ -192,7 +209,7 @@ function AddModule {
     $inProgressTxtBox.Clear()
     $completeTxtBox.Clear()
     $keywordTxtBox.Clear()
-    $fileExt.Clear()
+    $fileExt.Text = "*.csv"
  }
 
 

@@ -8,7 +8,7 @@ $pe = [PowerExcel]::new($file, $true)
 
 
 class PowerExcel {
-    [string] $file
+    [System.IO.FileSystemInfo] $file
     $meta = @{}
     $excelConn = @{
         conn=$null
@@ -32,7 +32,8 @@ class PowerExcel {
         $this.excelConn.workbook = ($this.excelConn.conn.Workbooks.Open($excelFile))
         #save file as XLSX file version 51: xlOpenXMLWorkbook
         if ($excelFile.Extension -eq '.csv') {
-            $this.excelConn.workbook.SaveAs($excelFile.FullName.Trim(".csv"), 51)
+            $newFile = "$($this.meta.inProgress)\$($excelFile.BaseName)"
+            $this.excelConn.workbook.SaveAs($newFile, 51)
         }
         
         $this.excelConn.conn.Visible = $showWindow 
@@ -107,9 +108,25 @@ class PowerExcel {
 
         $this.SaveAndQuit()
         Start-Sleep -Seconds 1
-        $newPath = $this.file.Trim(".csv") + ".xlsx"
+        $newPath = $this.GetInProgressFile()
+        Write-Host $newPath
         Move-Item -Path $newPath -Destination $finalDir
+    }
 
+    [string] GetInProgressFile() {
+        return "$($this.meta.inProgress)\$($this.file.BaseName).xlsx"
+    }
+    [boolean] NotExcelFile() {
+        return ($null -eq $this.excelConn.conn)
+    }
+    [void] CopyFileTo($dir)
+    {
+        $finalDir = $dir
+        if ($dir -like "{*}") { 
+            $finalDir = $this.meta[$dir.substring(1, $dir.Length -2)] 
+        }
+        Write-Host "Moving non excel file to {completed}: $finalDir"
+        Copy-Item -Path $this.file -Destination $finalDir
     }
     [void] ApplyFilter($byCol, $onRows, $filterName, $filterAction)  {
         $this.getWS().Rows($onRows).AutoFilter($byCol, @($filterName, $filterAction), 7)
