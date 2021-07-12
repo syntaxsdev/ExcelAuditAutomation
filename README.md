@@ -9,7 +9,7 @@ This project utilizes three main files. **AuditControl.ps1**, **AutomationMaker.
     - ORIGINAL and IN PROGRESS paths CANNOT be blank, however COMPLETE path can be empty.
     - To whitelist a file so only certain file names will be processed, enter a keywords, seperated by a comma.
     - If you want to add more to the existing config, hit the "Import" button. If one does not already exist it will give you a warning.
-    
+    - If your automation moves the file to another location, you must select _ignores default path._
 3.	Once **AUTO_CONFIG.ps1** is done, open **AuditControl.ps1** to start your automation. With the attached configuration saved, all you have to do now is type the amount of days back from the current day you want the program to process the files. 
 EX: If it is a Monday, you must type 3, to process audits from Friday, Saturday & Sunday.
 If it is any other day of the week, you may only need to type 1 for one day.
@@ -44,9 +44,9 @@ $excelScripts.newAutomation("MyAutomation", {
 
 ## Notes
 - When adding an automation, you must run the **AUTO_CONFIG.ps1** to generate a new configuration for your automation and attach the paths. 
-- When using SaveAndQuit(), it will automatically move the file to the IN PROGRESS folder. If you want to disable this, when generating the config in **AUTO_CONFIG.ps1** use _"myAutomation{ignore-path}"_ as the automation name, replacing "myAutomation" with the name of your function.
+- When using SaveAndQuit(), it will automatically save the file to the IN PROGRESS folder. If you want to disable this, when generating the config in **AUTO_CONFIG.ps1** select _"ignores default path"_.
 - If you are using _SaveQuitAndMove($dir)_, you must add "{ignore-path}" so the code knows you will not be changing its initial determined route.
-- If you want to save the file to a different location, use the function SaveQuitAndMove($dir). If you want to change it to the completed folder, use the `("{completed}")` tag or if you want to keep it in the ORIGINAL folder, then you must still use _"{ignore-path}"_ and use the method `SaveAndQuit()`
+- If you want to save the file to a different location, use the function SaveQuitAndMove($dir). If you want to change it to the completed folder, use the `("{completed}")` tag or if you want to keep it in the ORIGINAL folder, then you must still select _"ignores default path"_ and use the method `SaveQuitAndMove({original})`
 
 ## Functionality
 ```powershell
