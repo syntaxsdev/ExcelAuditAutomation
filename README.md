@@ -9,11 +9,9 @@ This project utilizes three main files. **AuditControl.ps1**, **AutomationMaker.
     - ORIGINAL and IN PROGRESS paths CANNOT be blank, however COMPLETE path can be empty.
     - To whitelist a file so only certain file names will be processed, enter a keywords, seperated by a comma.
     - If you want to add more to the existing config, hit the "Import" button. If one does not already exist it will give you a warning.
+    - If you do not want your file to convert CSV to XLSX, and want it to operate out the ORIGINAL folder, untick "Convert to Excel". This will not convert any other files besides .CSVs to .XLSX.
     - If your automation moves the file to another location, you must select _ignores default path._
-3.	Once **AUTO_CONFIG.ps1** is done, open **AuditControl.ps1** to start your automation. With the attached configuration saved, all you have to do now is type the amount of days back from the current day you want the program to process the files. 
-EX: If it is a Monday, you must type 3, to process audits from Friday, Saturday & Sunday.
-If it is any other day of the week, you may only need to type 1 for one day.
-
+3.	Once **AUTO_CONFIG.ps1** is done, open **AuditControl.ps1** to start your automation. With the attached configuration saved, all you have to do now is type the creation date that the audit files were made on. At the time, you can only process one day at a time.
 
 # How To Create An Automation
 1.	First, name your automation. Once you pick a name, open the **AutomationMaker.ps1** file.
@@ -50,7 +48,7 @@ $excelScripts.newAutomation("MyAutomation", {
 
 ## Functionality
 ```powershell
-+ SetWorksheet($num)
++ SetWorksheet($num)                                    
 + AddColumns($cols)
 + AddRows($rows)
 + SetColumnWidth($cols, $width)
@@ -63,6 +61,7 @@ $excelScripts.newAutomation("MyAutomation", {
 + GetRowCount()
 + SaveAndQuit()
 + SaveQuitAndMove($dir)
++ CopyFileTo($dir)
 ```
 ## Examples
 
