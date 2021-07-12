@@ -121,6 +121,16 @@ $IgnorePathChk.location          = New-Object System.Drawing.Point(280, 220)
 $IgnorePathChk.Font              = New-Object System.Drawing.Font('Microsoft YaHei UI',10)
 $IgnorePathChk.ForeColor         = [System.Drawing.ColorTranslator]::FromHtml("#ffffff")
 
+$SaveToXlChk                   = New-Object system.Windows.Forms.CheckBox
+$SaveToXlChk.text              = "Convert to Excel if .csv?"
+$SaveToXlChk.AutoSize          = $false
+$SaveToXlChk.width             = 200
+$SaveToXlChk.height            = 20
+$SaveToXlChk.Checked           = $true
+$SaveToXlChk.location          = New-Object System.Drawing.Point(480, 220)
+$SaveToXlChk.Font              = New-Object System.Drawing.Font('Microsoft YaHei UI',10)
+$SaveToXlChk.ForeColor         = [System.Drawing.ColorTranslator]::FromHtml("#ffffff")
+
 $fileExtLbl                      = New-Object system.Windows.Forms.Label
 $fileExtLbl.text                 = "Specific file extension"
 $fileExtLbl.AutoSize             = $true
@@ -160,10 +170,11 @@ $ToolTip.SetToolTip($completeLbl, '[OPTIONAL] This is optional, if you want to a
 $ToolTip.SetToolTip($AddModuleBtn, 'Once you are done with a job, click Add Module to save it. You can enter more modules after that.')
 $ToolTip.SetToolTip($SaveConfigBtn, 'Click here to save your configuration file. You can close the program after it saves.')
 $ToolTip.SetToolTip($fileExtLbl, 'If you want the automation to run on specific file types. If all files, leave as ".*" NOTE: Only .xlsx and .csv files can be processed through excel automation. .CSV files will be converted to .XLSX. ')
-
+$ToolTip.SetToolTip($SaveToXlChk, 'Select this if you have .csv files you want to convert to Excel. This will create a .xlsx version in the {IN PROGRESS} folder, leaving the original alone. If you want to use the original file or csv, untick this.')
+$ToolTip.SetToolTip($IgnorePathChk, 'Select this if you plan to use the SaveQuitAndMove() method in your automation')
 $Form.controls.AddRange(@($jobTxtBox,$jobLbl,$originalLbl,$originalTxtBox,$AddModuleBtn,
     $completeLbl,$completeTxtBox,$inProgressLbl,$inProgressTxtBox,$Button1,
-    $SaveConfigBtn, $keywordFileLbl, $keywordTxtBox, $ImportBtn, $fileExtLbl, $fileExt, $IgnorePathChk))
+    $SaveConfigBtn, $keywordFileLbl, $keywordTxtBox, $ImportBtn, $fileExtLbl, $fileExt, $IgnorePathChk, $SaveToXlChk))
 
 $AddModuleBtn.Add_Click({ AddModule })
 $SaveConfigBtn.Add_Click({ SaveConfig })
@@ -202,6 +213,7 @@ function AddModule {
         inProgress=$inProgressTxtBox.Text
         completed=$completeTxtBox.Text
         fileNames=$keywordTxtBox.Text
+        saveToXl=$SaveToXlChk.Checked
         fileType=($fileExt.Text -split ",").Trim()
     }
     $jobTxtBox.Clear()

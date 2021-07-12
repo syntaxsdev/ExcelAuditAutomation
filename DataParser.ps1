@@ -33,7 +33,9 @@ class PowerExcel {
         #save file as XLSX file version 51: xlOpenXMLWorkbook
         if ($excelFile.Extension -eq '.csv') {
             $newFile = "$($this.meta.inProgress)\$($excelFile.BaseName)"
+            if ($this.meta.saveToXl) {
             $this.excelConn.workbook.SaveAs($newFile, 51)
+            }
         }
         
         $this.excelConn.conn.Visible = $showWindow 
