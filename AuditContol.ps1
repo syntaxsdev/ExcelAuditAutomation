@@ -1,7 +1,9 @@
 function Start-Auto($date, $autoList) {
     $config = $autoList#Import-Clixml -Path "$(Get-Location)\savedConfig.xml"
     Write-Host "`nAuditingControl is running. There were $($config.count) automations found."
+    $task = 1
     $config.Keys | ForEach-Object {
+        Write-Host "RUNNING TASK: $task/$($config.Count)"
         if ($config[$_].fileNames -ne "all" -or $config[$_].fileNames -ne "no" -or $config[$_].fileNames -ne "") {
             $fileNames = $config[$_].fileNames -split ","
         }
@@ -29,10 +31,12 @@ function Start-Auto($date, $autoList) {
             }
            }
         }
+        $task ++
     }
+    Write-Host "`nDone excuting all automations."
 }
 
-Add-Type -Name Window -Namespace Console -MemberDefinition '
+<#Add-Type -Name Window -Namespace Console -MemberDefinition '
 [DllImport("Kernel32.dll")]
 public static extern IntPtr GetConsoleWindow();
 
@@ -40,6 +44,7 @@ public static extern IntPtr GetConsoleWindow();
 public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);'
 
 [Console.Window]::ShowWindow([Console.Window]::GetConsoleWindow(), 0)
+#>
 Add-Type -AssemblyName System.Windows.Forms
 
 [System.Windows.Forms.Application]::EnableVisualStyles()

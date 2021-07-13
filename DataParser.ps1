@@ -3,7 +3,7 @@ Param(
 [Parameter(Mandatory=$true)]$module
 )
 
-$pe = [PowerExcel]::new($file, $true)
+$pe = [PowerExcel]::new($file, $false)
 . "$(Get-Location)\AutomationMaker.ps1" -action "run" -event $pe -module $module
 
 
@@ -56,6 +56,14 @@ class PowerExcel {
         return $this
     }
 
+    [boolean] compareFile($dir, $name) {
+        $finalDir = $dir
+        if ($finalDir -like "{*}") { 
+            $finalDir = $this.meta[$dir.substring(1, $dir.Length -2)] 
+        }
+        $file2 = Get-Item "$finalDir\$name"
+        return ( (Get-FileHash $this.file -Algorithm "SHA256").Hash -eq (Get-FileHash $file2 -Algorithm "SHA256").Hash )
+    }
     [object] AddRows([string] $rows) {
         $ws = $this.getWS()
         $ws.Rows("$rows").Insert()
@@ -67,7 +75,6 @@ class PowerExcel {
         $ws.Columns($cols).ColumnWidth = $size
         return $this
     }
-
 
     [object] SetCell($cells, $value) {
         $this.getWS().Range($cells).Value2 = $value
@@ -115,19 +122,49 @@ class PowerExcel {
         Move-Item -Path $newPath -Destination $finalDir
     }
 
+    [void] Quit() {
+        $this.excelConn.conn.Quit()
+    }
     [string] GetInProgressFile() {
         return "$($this.meta.inProgress)\$($this.file.BaseName).xlsx"
     }
     [boolean] NotExcelFile() {
         return ($null -eq $this.excelConn.conn)
     }
+    [string] getMetaPath($string) {
+        $finalDir = $string
+        if ($finalDir -like "{*}") { 
+            $finalDir = $this.meta[$string.substring(1, $string.Length -2)] 
+        }
+        return $finalDir
+    }
+    [void] MoveFileTo($dir)
+    {
+        Move-Item -Path $this.file -Destination $this.getMetaPath($dir)
+    }
+
+    [object] GetFile($dir, $name) {
+        if ($this.DoesFileExist($dir, $name)) {
+            return (Get-Item -Path "$($this.getMetaPath($dir))\$name")
+        } else {
+            Write-Error "File was not found."
+            return $null
+        }
+    }
+    [object] CreateFile($dir, $name, $txt) {
+        Write-Host "path: $($this.getMetaPath($dir))"
+        $LclFile = New-Item -Path "$($this.getMetaPath($dir))\$name"
+        Add-Content $LclFile $txt
+        return $LclFile
+    }
+
+    [object] DoesFileExist($dir, $filename) {
+        return Test-Path -Path "$($this.getMetaPath($dir))\$filename"
+    }
     [void] CopyFileTo($dir)
     {
-        $finalDir = $dir
-        if ($dir -like "{*}") { 
-            $finalDir = $this.meta[$dir.substring(1, $dir.Length -2)] 
-        }
-        Write-Host "Moving non excel file to {completed}: $finalDir"
+        $finalDir = $this.getMetaPath($dir)
+        Write-Host "Copying file to {completed}: $finalDir"
         Copy-Item -Path $this.file -Destination $finalDir
     }
     [void] ApplyFilter($byCol, $onRows, $filterName, $filterAction)  {
