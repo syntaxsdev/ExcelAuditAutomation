@@ -56,6 +56,22 @@ $originalTxtBox.height           = 20
 $originalTxtBox.location         = New-Object System.Drawing.Point(286,44)
 $originalTxtBox.Font             = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
+$inProgressLbl                   = New-Object system.Windows.Forms.Label
+$inProgressLbl.text              = "Enter IN PROGRESS path for automation:"
+$inProgressLbl.AutoSize          = $true
+$inProgressLbl.width             = 25
+$inProgressLbl.height            = 10
+$inProgressLbl.location          = New-Object System.Drawing.Point(13,83)
+$inProgressLbl.Font              = New-Object System.Drawing.Font('Microsoft YaHei UI',10)
+$inProgressLbl.ForeColor         = [System.Drawing.ColorTranslator]::FromHtml("#ffffff")
+
+$inProgressTxtBox                = New-Object system.Windows.Forms.TextBox
+$inProgressTxtBox.multiline      = $false
+$inProgressTxtBox.width          = 397
+$inProgressTxtBox.height         = 20
+$inProgressTxtBox.location       = New-Object System.Drawing.Point(286,80)
+$inProgressTxtBox.Font           = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
+
 $AddModuleBtn                    = New-Object system.Windows.Forms.Button
 $AddModuleBtn.text               = "Add Module"
 $AddModuleBtn.width              = 120
@@ -88,21 +104,7 @@ $completeTxtBox.height           = 20
 $completeTxtBox.location         = New-Object System.Drawing.Point(286,118)
 $completeTxtBox.Font             = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
-$inProgressLbl                   = New-Object system.Windows.Forms.Label
-$inProgressLbl.text              = "Enter IN PROGRESS path for automation:"
-$inProgressLbl.AutoSize          = $true
-$inProgressLbl.width             = 25
-$inProgressLbl.height            = 10
-$inProgressLbl.location          = New-Object System.Drawing.Point(13,83)
-$inProgressLbl.Font              = New-Object System.Drawing.Font('Microsoft YaHei UI',10)
-$inProgressLbl.ForeColor         = [System.Drawing.ColorTranslator]::FromHtml("#ffffff")
 
-$inProgressTxtBox                = New-Object system.Windows.Forms.TextBox
-$inProgressTxtBox.multiline      = $false
-$inProgressTxtBox.width          = 397
-$inProgressTxtBox.height         = 20
-$inProgressTxtBox.location       = New-Object System.Drawing.Point(286,80)
-$inProgressTxtBox.Font           = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
 $keywordFileLbl                  = New-Object system.Windows.Forms.Label
 $keywordFileLbl.text             = "Enter keywords for the file names you only want the program to run on, separated by commas."
@@ -120,6 +122,7 @@ $keywordTxtBox.height            = 20
 $keywordTxtBox.location          = New-Object System.Drawing.Point(22,188)
 $keywordTxtBox.Font              = New-Object System.Drawing.Font('Microsoft Sans Serif',10)
 
+<#
 $IgnorePathChk                   = New-Object system.Windows.Forms.CheckBox
 $IgnorePathChk.text              = "Ignores Default Path?"
 $IgnorePathChk.AutoSize          = $false
@@ -128,6 +131,7 @@ $IgnorePathChk.height            = 20
 $IgnorePathChk.location          = New-Object System.Drawing.Point(280, 220)
 $IgnorePathChk.Font              = New-Object System.Drawing.Font('Microsoft YaHei UI',10)
 $IgnorePathChk.ForeColor         = [System.Drawing.ColorTranslator]::FromHtml("#ffffff")
+#>
 
 $SaveToXlChk                   = New-Object system.Windows.Forms.CheckBox
 $SaveToXlChk.text              = "Convert to Excel if .csv?"
@@ -135,7 +139,7 @@ $SaveToXlChk.AutoSize          = $false
 $SaveToXlChk.width             = 200
 $SaveToXlChk.height            = 20
 $SaveToXlChk.Checked           = $true
-$SaveToXlChk.location          = New-Object System.Drawing.Point(480, 220)
+$SaveToXlChk.location          = New-Object System.Drawing.Point(280, 220)
 $SaveToXlChk.Font              = New-Object System.Drawing.Font('Microsoft YaHei UI',10)
 $SaveToXlChk.ForeColor         = [System.Drawing.ColorTranslator]::FromHtml("#ffffff")
 
@@ -182,16 +186,13 @@ $ToolTip.SetToolTip($SaveToXlChk, 'Select this if you have .csv files you want t
 $ToolTip.SetToolTip($IgnorePathChk, 'Select this if you plan to use the SaveQuitAndMove() method in your automation')
 $Form.controls.AddRange(@($jobTxtBox,$jobLbl,$originalLbl,$originalTxtBox,$AddModuleBtn,
     $completeLbl,$completeTxtBox,$inProgressLbl,$inProgressTxtBox,$Button1,
-    $SaveConfigBtn, $keywordFileLbl, $keywordTxtBox, $ImportBtn, $fileExtLbl, $fileExt, $IgnorePathChk, $SaveToXlChk))
+    $SaveConfigBtn, $keywordFileLbl, $keywordTxtBox, $ImportBtn, $fileExtLbl, $fileExt, $SaveToXlChk))
 
 $AddModuleBtn.Add_Click({ AddModule })
 $SaveConfigBtn.Add_Click({ SaveConfig })
 $ImportBtn.Add_Click( { ImportConfig } )
-$IgnorePathChk.Add_Click({ IgnorePath })
 
-function IgnorePath() {
 
-}
 function ImportConfig {
     $path = "$(Get-Location)\savedConfig.xml"
     Test-Path -Path $path
@@ -214,9 +215,6 @@ function SaveConfig {
 
 function AddModule {
     $jobName = $jobTxtBox.Text
-    if ($IgnorePathChk.Checked) {
-        $jobName = "$jobName{ignore-path}"
-    }
     $config[$jobName] = @{original=$originalTxtBox.Text
         inProgress=$inProgressTxtBox.Text
         completed=$completeTxtBox.Text

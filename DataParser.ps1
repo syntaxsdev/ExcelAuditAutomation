@@ -3,7 +3,7 @@ Param(
 [Parameter(Mandatory=$true)]$module
 )
 
-$pe = [PowerExcel]::new($file, $false)
+$pe = [PowerExcel]::new($file, $true)
 . "$(Get-Location)\AutomationMaker.ps1" -action "run" -event $pe -module $module
 
 
@@ -19,7 +19,7 @@ class PowerExcel {
     PowerExcel($excelFile, $showWindow) {
         $this.file = $excelFile
         $import = (Import-Clixml -Path "$(Get-Location)\savedConfig.xml") #[$mDataKey]
-        $this.meta = $import[($import.Keys | Where-Object {$_ -like "*$module*"})]
+        $this.meta = $import[($import.Keys | Where-Object {$_ -eq $module})]
 
         #if not an excel or processable file, then return
         #does not need a workbook connection
@@ -34,10 +34,11 @@ class PowerExcel {
         if ($excelFile.Extension -eq '.csv') {
             $newFile = "$($this.meta.inProgress)\$($excelFile.BaseName)"
             if ($this.meta.saveToXl) {
+                Start-Sleep -Milliseconds 500
+                Write-Host "[$newFile] : File name"
             $this.excelConn.workbook.SaveAs($newFile, 51)
             }
         }
-        
         $this.excelConn.conn.Visible = $showWindow 
     }
 
@@ -110,20 +111,15 @@ class PowerExcel {
         return $this.getWS().UsedRange.Rows.Count
     }
     [void] SaveQuitAndMove($dir) {
-        $finalDir = $dir
-        if ($dir -like "{*}") { 
-            $finalDir = $this.meta[$dir.substring(1, $dir.Length -2)] 
-        }
-
         $this.SaveAndQuit()
         Start-Sleep -Seconds 1
         $newPath = $this.GetInProgressFile()
-        Write-Host $newPath
-        Move-Item -Path $newPath -Destination $finalDir
+        Move-Item -Path $newPath -Destination $this.getMetaPath($dir)
     }
 
     [void] Quit() {
         $this.excelConn.conn.Quit()
+        Start-Sleep -Milliseconds 500
     }
     [string] GetInProgressFile() {
         return "$($this.meta.inProgress)\$($this.file.BaseName).xlsx"
@@ -167,7 +163,7 @@ class PowerExcel {
         Write-Host "Copying file to {completed}: $finalDir"
         Copy-Item -Path $this.file -Destination $finalDir
     }
-    [void] ApplyFilter($byCol, $onRows, $filterName, $filterAction)  {
-        $this.getWS().Rows($onRows).AutoFilter($byCol, @($filterName, $filterAction), 7)
+    [void] ApplyFilter($byCol, $onRows, $filterName, [string]$fa1, [string]$fa2, [string]$fa3)  {
+        $this.getWS().Rows($onRows).AutoFilter($byCol, @($filterName, $fa1, $fa2, $fa3), 7)
     }
 }

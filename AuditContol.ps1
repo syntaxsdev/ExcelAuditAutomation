@@ -9,9 +9,11 @@ function Start-Auto($date, $autoList) {
         }
         $filesInFolder = Get-ChildItem -Path $config[$_].original -Recurse -Include ($config[$_].fileType) | Where-Object {$_.CreationTime -ge $date -and $_.CreationTime -le $date.AddDays(1)}
         $newMod = $_
-        if ($newMod -like "*{ignore-path}*") {
+        <#
+            if ($newMod -like "*{ignore-path}*") {
             $newMod = $_.substring(0, $_.indexOf("{ignore-path}"))
-        }
+            }
+        #>
         foreach ($file in $filesInFolder) 
         {
             Write-Host "`nFile Found: [$file]"
@@ -24,10 +26,10 @@ function Start-Auto($date, $autoList) {
                     
                     . "$(Get-Location)\DataParser.ps1" -file $file -module $newMod
                     #pause 2 seconds because some large datasets take longer to save and quit
-                   if ($_ -eq $newMod) {
+                   <#if ($_ -eq $newMod) {
                     Start-Sleep -Seconds 1
                     Move-Item -Path "$($config[$_].original)\$($file.BaseName).xlsx" -Destination $config[$_].inProgress
-                }
+                }#>
             }
            }
         }
