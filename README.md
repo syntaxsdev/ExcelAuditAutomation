@@ -1,3 +1,5 @@
+# ExcelAuditAutomation Documentation
+
 # Overview
 This project utilizes three main files. **AuditControl.ps1**, **AutomationMaker.ps1**, and **DataParser.ps1**. This project aims to aid basic Excel automation for daily tasks and auditing, with the ability to stage them to different folders when done processing.
 
@@ -65,31 +67,44 @@ $excelScripts.newAutomation("MyAutomation", {
 ```
 Lets break down this code.
 
-```$excelScripts.newAutomation("MyAutomation", {```
+```powershell 
+$excelScripts.newAutomation("MyAutomation", {
+```
 
 This line creates a new automation called "myAutomation" with starting brackets to enclose automation code inside.
 
-```$excel = $excelScripts.getExcel()```
-
+```powershell 
+$excel = $excelScripts.getExcel() 
+```
 Grabs the excel automation object. Essential to do anything with the file.
 
-```$excel.AddColumns("D:D")```
+```powershell 
+$excel.AddColumns("D:D")
+```
 
 Add a columns to Column D only. If you want to add a column to D-F, use "D:F"
 
-```$excel.SetCell("D1", "Sum")```
+```powershell 
+$excel.SetCell("D1", "Sum")
+```
 
 Sets cell's text D1 to "Sum". The function can also be used to set formulas.
 
-```$excel.SetCell("D2", ($excel.GetCellValue("B2") + $excel.GetCellValue("C2")))```
+```powershell 
+$excel.SetCell("D2", ($excel.GetCellValue("B2") + $excel.GetCellValue("C2")))
+```
 
 Sets the starting cell D2 to be the sum of B2 and C2
 
-```$excel.FillDown("D2:D$($excel.GetRowCount())")```
+```powershell 
+$excel.FillDown("D2:D$($excel.GetRowCount())")
+```
 
 Autofills the formula from D2 to all the available rows.
 
-```$excel.SaveQuitAndMove("{completed}")```
+```powershell 
+$excel.SaveQuitAndMove("{completed}")
+```
 
 Saves the file, exits, and moves it to the {completed} folder that is specified in the configuration. You can also use any path you want, it does not have to save to the configuration paths.
 
@@ -225,7 +240,7 @@ Next, we append the .CSV file based on the result from the `.CompareFile()` meth
 + CreateFile($configDir, $name, $data)
 + GetFile($config)
 ```
-## Examples
+## More Examples
 
 ```powershell
 $excel.AddColumns("A:C") # Adds columns to in spot A-C. shifting over everything to right
